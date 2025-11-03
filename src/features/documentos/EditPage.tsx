@@ -32,9 +32,9 @@ const EditPage: React.FC<Props> = ({ id }) => {
   const mutation = useMutation({
     mutationFn: (payload: Partial<DocumentoForm>) => updateDocumento(id, payload),
     onSuccess: () => {
-      toast.success("Documento actualizado");
-      qc.invalidateQueries({ queryKey: ["documentos"] });
-      qc.invalidateQueries({ queryKey: ["documento", id] });
+    toast.success("Documento actualizado correctamente");
+    qc.invalidateQueries({ queryKey: ["documentos"] });
+    navigate({ to: "/documentos" });
     },
     onError: () => toast.error("Error al actualizar"),
   });

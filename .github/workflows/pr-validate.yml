@@ -1,0 +1,56 @@
+name: PR Validate (Arkive Web)
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tsconfig.json"
+      - "vite.config.ts"
+      - "tailwind.config.js"
+      - ".github/workflows/pr-validate.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps (clean)
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      # Si no tienes linter, puedes comentar este paso.
+      - name: Lint (optional)
+        run: |
+          if [ -f package.json ] && jq -e '.scripts.lint' package.json > /dev/null; then
+            npm run lint
+          else
+            echo "No lint script found, skipping."
+          fi
+
+      - name: Build (Vite)
+        env:
+          VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
+          VITE_NOTIFIER_BASE: ${{ secrets.VITE_NOTIFIER_BASE }}
+          VITE_ARKIVE_TOKEN: ${{ secrets.VITE_ARKIVE_TOKEN }}
+        run: |
+          echo "Using API: ${VITE_API_BASE:-'(no secret set)'}"
+          npm run build

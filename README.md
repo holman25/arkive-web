@@ -143,6 +143,24 @@ Tests básicos ya cubiertos en Arkive.API (.NET).
 
 ---
 
+##  Integración CI/CD (GitHub Actions)
+
+Este proyecto incluye un pipeline automatizado con **GitHub Actions** para ejecución continua y despliegue controlado.
+
+###  Ubicación del workflow
+`.github/workflows/ci.yml`
+
+###  Eventos que lo activan
+- Cada `push` o `pull_request` a las ramas `develop` o `main`.
+- Ejecución manual desde la pestaña **Actions → Run Workflow**.
+
+### 🔄 Flujo del pipeline
+1. **Checkout del repositorio**  
+2. **Instalación de dependencias** con caching de `node_modules`
+3. **Build y validación del código**
+
+---
+
 ##  Deploy
 
 1. Ejecutar `npm run build`

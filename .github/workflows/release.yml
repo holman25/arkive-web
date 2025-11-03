@@ -1,0 +1,52 @@
+name: Release (Arkive Web)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write   
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build (Vite)
+        env:
+          VITE_API_BASE: ${{ secrets.VITE_API_BASE }}
+          VITE_NOTIFIER_BASE: ${{ secrets.VITE_NOTIFIER_BASE }}
+          VITE_ARKIVE_TOKEN: ${{ secrets.VITE_ARKIVE_TOKEN }}
+        run: npm run build
+
+      - name: Package dist
+        run: |
+          cd dist
+          zip -r ../dist.zip .
+          cd ..
+          sha256sum dist.zip > dist.zip.sha256
+          echo "Build packaged."
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist.zip
+            dist.zip.sha256
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
