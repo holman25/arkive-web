@@ -14,6 +14,9 @@ export type PageMeta = {
 }
 
 export type DocumentosResponse = {
-  data: Documento[]
-  meta: PageMeta
-}
+  items: Documento[];
+  page: number;
+  pageSize: number;
+  total: number;
+};
+

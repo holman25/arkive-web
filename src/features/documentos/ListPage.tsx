@@ -125,12 +125,13 @@ const ListPage: React.FC = () => {
                 header: () => <HeaderSort label="#" columnId="id" />,
                 cell: (c) => (
                     <Link
-                        to={`/documentos/${c.getValue()}`}
+                        to="/documentos/$id"
+                        params={{ id: String(c.getValue()) }}
                         className="underline hover:opacity-80 transition"
                         title="Ver / editar"
-                    >
+                        >
                         {c.getValue()}
-                    </Link>
+                        </Link>
                 ),
             }),
             columnHelper.accessor("titulo", { header: () => <HeaderSort label="Título" columnId="titulo" /> }),

@@ -26,10 +26,10 @@ const NewPage: React.FC = () => {
 
   const mutation = useMutation({
     mutationFn: (values: DocumentoForm) => createDocumento(values),
-    onSuccess: (doc: { id: number }) => {
-      toast.success("Documento creado");
-      qc.invalidateQueries({ queryKey: ["documentos"] });
-      navigate({ to: `/documentos/${doc.id}` });
+    onSuccess: () => {
+    toast.success("Documento creado correctamente");
+    qc.invalidateQueries({ queryKey: ["documentos"] });
+    navigate({ to: "/documentos" });
     },
     onError: () => toast.error("No se pudo crear el documento"),
   });
